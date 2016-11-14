@@ -1,0 +1,14 @@
+.pointer{cursor: pointer; }
+.fixed{position:fixed;}
+.content-box{top:60px;width:90%;margin: auto;}
+/*24点*/
+.border-normal{border: 1px solid #000;}
+.div-content{height:450px; }
+.div-msg{width: 780px; height: 300px;text-align: center;}
+.div-solution{width: 780px;height: 100px;}
+.msgBox{position: relative; left: 0px; bottom: 0px;}
+.hidden{display: none;}
+
+.div-find-msg{height:445px; }
+
+.input-mini{width: 150px;}

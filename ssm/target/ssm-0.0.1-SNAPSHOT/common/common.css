@@ -1,0 +1,9 @@
+.pointer{cursor: pointer; }
+.fixed{position:fixed;}
+.content-box{top:60px;width:90%;margin: auto;}
+/*24点*/
+.border-normal{border: 1px solid #000;}
+.div-content{height:450px; }
+.div-msg{width: 680px; height: 300px;text-align: center;}
+.div-solution{width: 680px;height: 100px;}
+.msgBox{position: relative; left: 0px; bottom: 0px;}

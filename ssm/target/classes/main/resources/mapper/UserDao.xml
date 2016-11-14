@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.dao.IUserDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<select id="findByObj" resultType="com.office.entity.TUser"
+		parameterType="com.office.entity.TUser">
+		<!-- 具体的sql -->
+		SELECT
+		id_user,
+		username,
+		password,
+		salt,
+		locked
+		FROM
+		t_user
+		where 1=1
+		<if test="username!=null">
+			and username = #{username}
+		</if>
+		<if test="password!=null">
+			and password=#{password}
+		</if>
+	</select>
+	
+	<select id="findByUserName" resultType="com.office.entity.TUser" parameterType="com.office.entity.TUser">
+		SELECT
+			id_user,
+			username,
+			password,
+			salt,
+			locked
+		FROM
+			t_user tu
+		WHERE
+			tu.username = #{username}
+	</select>
+
+
+</mapper>

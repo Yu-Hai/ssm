@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.dao.IConstDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	
+	<sql id="Base_Column">
+			tc.id_const,tc.value,tc.code,tc.type,tc.id_parent,tc.description
+	</sql>
+
+	<resultMap id="ConstMap" type="com.office.entity.TConst">
+		<id column="id_const" property="idConst" jdbcType="VARCHAR" />
+		<result column="permission" property="permission" jdbcType="VARCHAR" />
+		<result column="value" property="value" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<!-- 查询父模块 -->  
+        <association property="parentConst" column="id_parent" select="getConstById" /> 
+		<!-- 查询子模块 -->  
+        <collection property="childConsts" column="id_const" select="getChildrenConsts" />  
+	</resultMap>
+      
+     <!-- 查询父模块 -->  
+    <select id="getConstById" parameterType="java.lang.String" resultMap="ConstMap">  
+        select <include refid="Base_Column"/> from t_consts tc where tc.id_const = #{id_const}  
+    </select>  
+     
+    <!-- 查询子模块 -->
+    <select id="getChildrenConsts" parameterType="java.lang.String" resultMap="ConstMap">  
+        select <include refid="Base_Column"/> from t_consts tc where tc.id_parent = #{id_const}  
+    </select> 
+
+	<select id="getListByObj" parameterType="com.office.entity.TConst" resultMap="ConstMap">
+		SELECT
+			<include refid="Base_Column"/>
+		FROM
+			t_consts tc
+		WhERE 1=1
+			<if test="idConst!=null">
+				AND tc.id_const=#{idConst}
+			</if>
+			<if test="value!=null">
+				AND tc.value=#{value}
+			</if>
+			<if test="code!=null">
+				AND tc.code=#{code}
+			</if>
+			<if test="type!=null">
+				AND tc.type=#{type}
+			</if>
+		ORDER BY tc.value
+	</select>
+
+</mapper>

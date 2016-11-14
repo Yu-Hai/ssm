@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.dao.IPermissionDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	
+	<sql id="Base_Column">
+		tp.id_permission,tp.id_parent,tp.permission,tp.type,tp.sort,tp.url,tp.icon,tp.description,tp.available
+	</sql>
+
+	<resultMap id="PermissionMap" type="com.office.entity.TPermission">
+		<id column="id_permission" property="idPermission" jdbcType="VARCHAR" />
+		<result column="permission" property="permission" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="sort" property="sort" jdbcType="INTEGER" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="icon" property="icon" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="available" property="available" jdbcType="TINYINT" />
+		<!-- 查询父模块 -->  
+        <association property="parentPermission" column="id_parent" select="getPermissionById" /> 
+		<!-- 查询子模块 -->  
+        <collection property="childPermissions" column="id_permission" select="getChildrenPermissions" />  
+	</resultMap>
+      
+     <!-- 查询父模块 -->  
+    <select id="getPermissionById" parameterType="int" resultMap="PermissionMap">  
+        select <include refid="Base_Column"/> from t_permission tp where tp.id_permission = #{id_permission}  
+    </select>  
+     
+    <!-- 查询子模块 -->
+    <select id="getChildrenPermissions" parameterType="int" resultMap="PermissionMap">  
+        select <include refid="Base_Column"/> from t_permission tp where tp.id_parent = #{id_permission}  
+    </select> 
+
+	<select id="findPermissionByUser" parameterType="com.office.entity.TUser" resultMap="PermissionMap">
+		SELECT
+			<include refid="Base_Column"/>
+		FROM
+			t_permission tp
+		LEFT JOIN t_role_permission trp ON trp.id_permission = tp.id_permission
+		LEFT JOIN t_role tr ON tr.id_role = trp.id_role
+		LEFT JOIN t_user_role tur ON tr.id_role = tur.id_role
+		LEFT JOIN t_user tu ON tu.id_user = tur.id_user
+		WHERE tp.type='menu'
+			<if test="idUser!=null">
+				AND tu.id_user=#{idUser}
+			</if>
+			<if test="username!=null">
+				AND tu.username = #{username}
+			</if>
+	</select>
+
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.office.dao.IChengyuDao">
+	<sql id="Base_Column">
+		tc.id_chengyu,tc.chengyu,tc.pinyin,tc.diangu,tc.chuchu,tc.lizi,tc.spinyin
+	</sql>
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<select id="findChengyuByChengyu" resultType="com.office.entity.TChengyu" parameterType="com.office.dto.Chengyu">
+		SELECT
+			<include refid="Base_Column"/>
+		FROM
+			t_chengyu tc
+		WHERE 1=1
+		<if test="chengyu!=null and chengyu!=''">
+			AND	tc.chengyu LIKE CONCAT(#{chengyu},'%')
+		</if>
+		<if test="spinyin!=null and spinyin!=''">
+			AND tc.spinyin=#{spinyin}
+		</if>
+		<if test="start!=null and start!=''">
+			AND tc.spinyin LIKE CONCAT(#{start},'%')
+		</if>
+	</select>
+	<!-- 通过模型查找 -->
+	<select id="findChengyuByModel" resultType="com.office.entity.TChengyu" parameterType="com.office.dto.Chengyu">
+	SELECT * FROM (
+				SELECT
+					*
+				FROM
+					t_chengyu tc
+				WHERE 1=1
+				<if test="model=='AABB'">
+					AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 2, 1)
+					AND SUBSTRING(tc.chengyu, 3, 1) = SUBSTRING(tc.chengyu, 4, 1)
+				</if>
+				<if test="model=='ABAB'">
+					AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 3, 1)
+					AND SUBSTRING(tc.chengyu, 2, 1)= SUBSTRING(tc.chengyu, 4, 1)
+				</if>
+				<if test="model=='ABAC'">
+					AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 3, 1)
+				</if>
+				<if test="model=='AABC'">
+					AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 2, 1)
+				</if>
+				<if test="model=='ABCC'">
+					AND SUBSTRING(tc.chengyu, 3, 1) = SUBSTRING(tc.chengyu, 4, 1)
+				</if>
+				ORDER BY
+					tc.spinyin
+			) temp_table 
+				limit #{pageNo},#{pageSize};
+	</select>
+	
+	<!-- 通过模型查找 -->
+	<select id="findCountByModel" resultType="java.lang.Integer" parameterType="com.office.dto.Chengyu">
+		SELECT
+			count(0)
+		FROM
+			t_chengyu tc
+		WHERE 1=1
+		<if test="model=='AABB'">
+			AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 2, 1)
+			AND SUBSTRING(tc.chengyu, 3, 1) = SUBSTRING(tc.chengyu, 4, 1)
+		</if>
+		<if test="model=='ABAB'">
+			AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 3, 1)
+			AND SUBSTRING(tc.chengyu, 2, 1)= SUBSTRING(tc.chengyu, 4, 1)
+		</if>
+		<if test="model=='ABAC'">
+			AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 3, 1)
+		</if>
+		<if test="model=='AABC'">
+			AND	SUBSTRING(tc.chengyu, 1, 1) = SUBSTRING(tc.chengyu, 2, 1)
+		</if>
+		<if test="model=='ABCC'">
+			AND SUBSTRING(tc.chengyu, 3, 1) = SUBSTRING(tc.chengyu, 4, 1)
+		</if>
+	</select>
+
+</mapper>
